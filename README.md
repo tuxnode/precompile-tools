@@ -70,7 +70,7 @@ SHA256SUMS
 
 ## 构建环境
 
-`Dockerfile` 基于 `alpine:3.22`，包含静态编译所需的工具链和库：
+`Dockerfile` 基于 `alpine:3.21`，包含静态编译所需的工具链和库：
 
 | 组件 | 用途 |
 |------|------|
@@ -78,7 +78,7 @@ SHA256SUMS
 | `cmake` / `autoconf` / `automake` / `libtool` | 自动构建工具 |
 | `openssl-libs-static` | TLS/SSL 静态链接 |
 | `readline-static` / `ncurses-static` | 终端交互静态链接 |
-| `zlib-static` / `libevent-static` / `pcre2-static` | 压缩、事件、正则静态链接 |
+| `zlib-static` / `libevent-static` | 压缩、事件静态链接 |
 | `go` | 编译 fscan |
 
 ### 版本锁定

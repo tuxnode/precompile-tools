@@ -9,7 +9,7 @@ log "Bootstrapping libnfs"
 ./bootstrap
 
 log "Configuring libnfs"
-CFLAGS="$CFLAGS" LDFLAGS="-static" \
+CFLAGS="$CFLAGS" \
     ./configure \
         --disable-shared \
         --enable-static \
@@ -17,7 +17,7 @@ CFLAGS="$CFLAGS" LDFLAGS="-static" \
         --without-libkrb5
 
 log "Building libnfs"
-make -j"$JOBS"
+make -j"$JOBS" LDFLAGS="-all-static"
 
 install_bin utils/nfs-cat "$OUT_DIR/libnfs/nfs-cat"
 install_bin utils/nfs-cp "$OUT_DIR/libnfs/nfs-cp"

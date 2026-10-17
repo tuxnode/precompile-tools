@@ -1,4 +1,4 @@
-FROM alpine:3.22
+FROM alpine:3.21
 
 LABEL maintainer="precompile-tools"
 LABEL description="Alpine-based environment for statically compiling precompile-tools"
@@ -26,8 +26,7 @@ RUN apk add --no-cache \
     readline-dev readline-static \
     ncurses-dev ncurses-static \
     zlib-dev zlib-static \
-    libevent-dev libevent-static \
-    pcre2-dev pcre2-static
+    libevent-dev libevent-static
 
 WORKDIR /workspace
 CMD ["/bin/sh"]
