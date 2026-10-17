@@ -1,0 +1,12 @@
+/dist/
+/.build/
+/output/
+
+/busybox
+/inotify-tools/
+/libnfs/
+/net/
+
+*.tar.gz
+*.tar.bz2
+*.zip

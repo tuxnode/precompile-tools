@@ -1,0 +1,90 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v1.0.0"
+        required: true
+
+permissions:
+  contents: write
+
+env:
+  IMAGE: precompile-tools-build:latest
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build compiler image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          load: true
+          tags: ${{ env.IMAGE }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Compile all tools
+        run: |
+          mkdir -p dist
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -v "$PWD/dist:/out" \
+            -e OUT_DIR=/out \
+            -w /workspace \
+            "$IMAGE" ./scripts/build.sh
+
+      - name: Verify binaries
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -v "$PWD/dist:/out" \
+            -e OUT_DIR=/out \
+            -w /workspace \
+            "$IMAGE" ./scripts/verify.sh
+
+      - name: Package release assets
+        env:
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -v "$PWD/dist:/out" \
+            -e OUT_DIR=/out \
+            -w /workspace \
+            "$IMAGE" ./scripts/package.sh "$TAG"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: |
+            dist/*.tar.gz
+            dist/SHA256SUMS
+
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/*.tar.gz dist/SHA256SUMS --clobber
+          else
+            gh release create "$TAG" dist/*.tar.gz dist/SHA256SUMS \
+              --title "$TAG" \
+              --generate-notes
+          fi

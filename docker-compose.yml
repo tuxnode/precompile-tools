@@ -1,0 +1,16 @@
+services:
+  builder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: precompile-tools-build:latest
+    container_name: precompile-tools-builder
+    volumes:
+      - ./:/workspace
+      - ./dist:/out
+    working_dir: /workspace
+    environment:
+      OUT_DIR: /out
+    stdin_open: true
+    tty: true
+    entrypoint: ["/bin/sh"]

@@ -1,0 +1,6 @@
+.git
+.gitmodules
+third_party
+dist
+.build
+output

@@ -1,0 +1,27 @@
+[submodule "third_party/busybox"]
+	path = third_party/busybox
+	url = https://git.busybox.net/busybox
+[submodule "third_party/inotify-tools"]
+	path = third_party/inotify-tools
+	url = https://github.com/inotify-tools/inotify-tools.git
+[submodule "third_party/libnfs"]
+	path = third_party/libnfs
+	url = https://github.com/sahlberg/libnfs.git
+[submodule "third_party/nmap"]
+	path = third_party/nmap
+	url = https://github.com/nmap/nmap.git
+[submodule "third_party/redsocks"]
+	path = third_party/redsocks
+	url = https://github.com/darkk/redsocks.git
+[submodule "third_party/socat"]
+	path = third_party/socat
+	url = git://repo.or.cz/socat.git
+[submodule "third_party/tcpdump"]
+	path = third_party/tcpdump
+	url = https://github.com/the-tcpdump-group/tcpdump.git
+[submodule "third_party/libpcap"]
+	path = third_party/libpcap
+	url = https://github.com/the-tcpdump-group/libpcap.git
+[submodule "third_party/fscan"]
+	path = third_party/fscan
+	url = https://github.com/shadow1ng/fscan.git
