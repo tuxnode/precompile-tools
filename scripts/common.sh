@@ -39,7 +39,7 @@ stage_source() {
     log "Staging $name source"
     rm -rf "$dst"
     mkdir -p "$dst"
-    git -C "$src" archive --format=tar HEAD | tar -x -C "$dst"
+    git -c safe.directory='*' -C "$src" archive --format=tar HEAD | tar -x -C "$dst"
 }
 
 install_bin() {
