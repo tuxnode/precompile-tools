@@ -15,7 +15,7 @@ log "Packaging $NAME"
 rm -rf "$STAGE"
 mkdir -p "$STAGE"
 cp -a "$OUT_DIR/." "$STAGE/"
-cp "$ROOT_DIR/README.md" "$STAGE/"
+cp "$ROOT_DIR/README.md" "$ROOT_DIR/README.zh-CN.md" "$STAGE/"
 cp -a "$ROOT_DIR/docs" "$STAGE/"
 
 mkdir -p "$OUT_DIR"
