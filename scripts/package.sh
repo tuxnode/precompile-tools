@@ -16,6 +16,7 @@ rm -rf "$STAGE"
 mkdir -p "$STAGE"
 cp -a "$OUT_DIR/." "$STAGE/"
 cp "$ROOT_DIR/README.md" "$STAGE/"
+cp -a "$ROOT_DIR/docs" "$STAGE/"
 
 mkdir -p "$OUT_DIR"
 tar -C "$STAGE_ROOT" -czf "$OUT_DIR/$NAME.tar.gz" "$NAME"
