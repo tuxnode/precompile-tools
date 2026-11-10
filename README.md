@@ -1,28 +1,32 @@
-# Precompile Tools —— 静态编译网络安全工具集
+# Precompile Tools — Statically Compiled Network Security Toolkit
 
-本仓库提供一套通过 musl libc **静态编译**的网络安全工具，适用于 **AWD Plus (AWDP)** 和**渗透挑战赛**场景。所有二进制文件均为独立可执行文件，无需依赖系统动态库，可直接上传至目标靶机使用。
+English | [简体中文](README.zh-CN.md)
 
-## 仓库说明
+This repository provides a set of network security tools **statically compiled** against musl libc, intended for **AWD Plus (AWDP)** and **penetration challenge** scenarios. Every binary is a standalone executable that does not depend on system dynamic libraries, so it can be uploaded directly to a target machine.
 
-本仓库**不保存预编译二进制**，只保存构建脚本、Alpine 编译环境和上游源码子模块。二进制在推送 `v*` tag 后由 GitHub Actions 自动编译，并上传到 GitHub Releases。
+## About the Repository
 
-源码通过 `git submodule` 固定在 `third_party/` 下，克隆时需要初始化子模块：
+This repository **does not store prebuilt binaries**; it only contains build scripts, the Alpine build environment, and upstream source submodules. Binaries are compiled automatically by GitHub Actions after pushing a `v*` tag and uploaded to GitHub Releases.
+
+Sources are pinned under `third_party/` via `git submodule`. Initialize submodules when cloning:
 
 ```bash
 git clone --recurse-submodules https://github.com/tuxnode/precompile-tools.git
-# 已经克隆过：
+# Already cloned:
 git submodule update --init --recursive
 ```
 
-## 目录结构
+## Directory Structure
 
 ```
 precompile-tools/
-├── Dockerfile                  # Alpine 静态编译环境
-├── docker-compose.yml          # 本地编译入口
-├── docs/                       # 使用文档（英文默认 / 简体中文）
-├── scripts/                    # 各工具构建/校验/打包脚本
-├── third_party/                # 上游源码子模块（固定 commit）
+├── README.md                   # English README (default)
+├── README.zh-CN.md             # Chinese README
+├── Dockerfile                  # Alpine static build environment
+├── docker-compose.yml          # Local build entry point
+├── docs/                       # Usage guide (English default / Chinese)
+├── scripts/                    # Per-tool build/verify/package scripts
+├── third_party/                # Upstream source submodules (pinned commits)
 │   ├── busybox/
 │   ├── inotify-tools/
 │   ├── libnfs/
@@ -33,10 +37,10 @@ precompile-tools/
 │   ├── libpcap/
 │   └── fscan/
 └── .github/workflows/
-    └── release.yml             # tag 自动编译并发布 Release
+    └── release.yml             # Auto-build and publish releases on tags
 ```
 
-编译产物目录（不提交到 Git）：
+Build output directory (not committed to Git):
 
 ```
 dist/
@@ -52,56 +56,56 @@ dist/
 └── net/
     ├── fscan
     ├── nmap
-    ├── nmap-data/            # nmap 运行所需数据文件
+    ├── nmap-data/            # Data files required by nmap at runtime
     ├── redsocks
     ├── socat
     └── tcpdump
 ```
 
-## 下载预编译二进制
+## Download Prebuilt Binaries
 
-前往 [GitHub Releases](https://github.com/tuxnode/precompile-tools/releases) 下载：
+Go to [GitHub Releases](https://github.com/tuxnode/precompile-tools/releases) and download:
 
 ```text
 precompile-tools-<tag>-x86_64.tar.gz
 SHA256SUMS
 ```
 
-解压后即可使用，目录结构与上方的 `dist/` 一致。
+Extract the archive and use it directly; the directory structure matches `dist/` above.
 
-## 构建环境
+## Build Environment
 
-`Dockerfile` 基于 `alpine:3.21`，包含静态编译所需的工具链和库：
+The `Dockerfile` is based on `alpine:3.21` and includes the toolchain and libraries needed for static compilation:
 
-| 组件 | 用途 |
-|------|------|
-| `build-base` / `linux-headers` | GCC、make、musl 头文件 |
-| `cmake` / `autoconf` / `automake` / `libtool` | 自动构建工具 |
-| `openssl-libs-static` | TLS/SSL 静态链接 |
-| `readline-static` / `ncurses-static` | 终端交互静态链接 |
-| `zlib-static` / `libevent-static` | 压缩、事件静态链接 |
-| `go` | 编译 fscan |
+| Component | Purpose |
+|-----------|---------|
+| `build-base` / `linux-headers` | GCC, make, musl headers |
+| `cmake` / `autoconf` / `automake` / `libtool` | Build automation tools |
+| `openssl-libs-static` | Static TLS/SSL linking |
+| `readline-static` / `ncurses-static` | Static terminal interaction linking |
+| `zlib-static` / `libevent-static` | Static compression/event linking |
+| `go` | Build fscan |
 
-### 版本锁定
+### Pinned Versions
 
-| 工具 | 版本 | 子模块 |
-|------|------|--------|
+| Tool | Version | Submodule |
+|------|---------|-----------|
 | busybox | 1.36.1 | `third_party/busybox` |
 | inotify-tools | 4.23.9.0 | `third_party/inotify-tools` |
 | libnfs | 6.0.2 | `third_party/libnfs` |
 | nmap | 7.992 | `third_party/nmap` |
 | redsocks | 0.5-11-g19b822e | `third_party/redsocks` |
 | socat | 1.8.0.1 | `third_party/socat` |
-| tcpdump / libpcap | 4.99.4 / 1.10.4 | `third_party/tcpdump`、`third_party/libpcap` |
+| tcpdump / libpcap | 4.99.4 / 1.10.4 | `third_party/tcpdump`, `third_party/libpcap` |
 | fscan | 2.1.3 | `third_party/fscan` |
 
-### 本地编译
+### Local Build
 
 ```bash
-# 构建编译环境
+# Build the build environment
 docker build -t precompile-tools-build .
 
-# 全量编译到 dist/
+# Build everything into dist/
 docker run --rm \
     -v "$PWD:/workspace" \
     -v "$PWD/dist:/out" \
@@ -109,7 +113,7 @@ docker run --rm \
     -w /workspace \
     precompile-tools-build ./scripts/build.sh
 
-# 只编译单个工具
+# Build a single tool
 docker run --rm \
     -v "$PWD:/workspace" \
     -v "$PWD/dist:/out" \
@@ -117,7 +121,7 @@ docker run --rm \
     -w /workspace \
     precompile-tools-build ./scripts/build.sh nmap
 
-# 校验静态链接并执行冒烟测试
+# Verify static linking and run smoke tests
 docker run --rm \
     -v "$PWD:/workspace" \
     -v "$PWD/dist:/out" \
@@ -126,17 +130,17 @@ docker run --rm \
     precompile-tools-build ./scripts/verify.sh
 ```
 
-也可以使用 Docker Compose：
+You can also use Docker Compose:
 
 ```bash
 docker compose run --rm builder ./scripts/build.sh
 ```
 
-所有二进制文件格式：**x86-64 ELF, static-pie/static linked**，包括 `fscan`（使用 `CGO_ENABLED=0` 静态编译）。
+All binaries are **x86-64 ELF, static-pie/static linked**, including `fscan` (built statically with `CGO_ENABLED=0`).
 
-## 使用文档
+## Usage Documentation
 
-包含各工具详解、CTF/AWDP 实战场景、反弹 Shell 专题与综合流程：
+Detailed tool references, CTF/AWDP scenarios, reverse shell guide, and complete workflows:
 
-- [English（默认）](docs/USAGE.md)
+- [English (default)](docs/USAGE.md)
 - [简体中文](docs/USAGE.zh-CN.md)
